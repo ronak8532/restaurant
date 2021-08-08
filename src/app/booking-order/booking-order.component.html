@@ -1,0 +1,160 @@
+<div class="header">
+  <h2>Pre Order Booking</h2>
+</div>
+
+<div class="container">
+  <div class="stepsContainer">
+    <div class="stepCircle" [ngStyle]="{ background: stepOne ? 'green' : 'lightgrey' }">
+      1
+    </div>
+
+    <div class="stepConectorPiece" [ngStyle]="{ background: stepOne ? 'green' : 'lightgrey' }"></div>
+
+    <div class="stepCircle" [ngStyle]="{ background: stepTwo ? 'green' : 'lightgrey' }">
+      2
+    </div>
+    <div class="stepConectorPiece" [ngStyle]="{ background: stepTwo ? 'green' : 'lightgrey' }"></div>
+
+    <div class="stepCircle" [ngStyle]="{ background: stepThree ? 'green' : 'lightgrey' }">
+      3
+    </div>
+    <div class="stepConectorPiece" [ngStyle]="{ background: stepThree ? 'green' : 'lightgrey' }"></div>
+
+    <div class="stepCircle" [ngStyle]="{ background: stepFour ? 'green' : 'lightgrey' }">
+      4
+    </div>
+  </div>
+  <div class="" *ngIf="stepOneDetail">
+    <form [formGroup]="orderForm" (ngSubmit)="step2()">
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Please Select Meal</label>
+        <select id="meal" formControlName="meal" name="meal" class="form-control">
+          <option value="Select"></option>
+          <option *ngFor="let meal of meals"> {{meal}} </option>
+        </select>
+        <div *ngIf="orderForm.get('meal').errors">
+          <small class="form-text text-danger"
+            *ngIf=" orderForm.get('meal').touched && orderForm.get('meal').errors.required">Please
+            Select Meal.</small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Please Enter Number Of People</label>
+        <input class="form-control" formControlName="noOfPeople" type="number"  aria-label="readonly input example">
+        <div *ngIf="orderForm.get('noOfPeople').errors">
+          <small class="form-text text-danger"
+            *ngIf="orderForm.get('noOfPeople').touched && orderForm.get('noOfPeople').errors.required">Please Enter Number Of People.</small>
+        </div>
+        <small class="form-text text-danger" *ngIf="maxLength"
+            >Maximum 10 Number Of People Allowed</small>
+      </div>
+      <div class="row">
+        <div class="col">
+          <!-- <button type="button" class="btn btn-primary">Previous</button> -->
+        </div>
+        <div class="col"></div>
+        <div class="col">
+          <button type="submit" class="btn btn-primary">Next</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="stepOneDetail" *ngIf="stepTwoDetail">
+    <form [formGroup]="orderForm" (ngSubmit)="step3()">
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Please Select Restaurant</label>
+        <select id="restaurantName" formControlName="restaurantName" name="restaurantName" class="form-control">
+          <option value="Select" disabled></option>
+          <option *ngFor="let r of availableRestaurant"> {{r}} </option>
+        </select>
+        <div *ngIf="orderForm.get('restaurantName').errors">
+          <small class="form-text text-danger"
+            *ngIf=" orderForm.get('restaurantName').touched && orderForm.get('restaurantName').errors.required">Please
+            Select Restaurant.</small>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <button type="button" class="btn btn-primary" (click)="previousStepOne()">Previous</button>
+        </div>
+        <div class="col"></div>
+        <div class="col">
+          <button type="submit" class="btn btn-primary">Next</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="stepThreeDetail" *ngIf="stepThreeDetail">
+    <form [formGroup]="dishesForm" (ngSubmit)="step4()">
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label for="exampleFormControlInput1" class="form-label">Please Select Dish</label>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="exampleFormControlInput1" class="form-label">Please Enter No Of Serving</label>
+        </div>
+      </div>
+      <div formArrayName="dishes">
+        <div class="row" *ngFor="let dish of dishControl.controls; let i = index" [formGroupName]="i">
+          <div class="form-group col-md-6">
+            <select id="dish" formControlName="dish" name="dish" class="form-control">
+              <option value="Select"></option>
+              <option *ngFor="let dish of availableDishes"> {{dish}} </option>
+            </select>
+            <div *ngIf="dish.get('dish').errors">
+              <small class="form-text text-danger"
+                *ngIf=" dish.get('dish').touched && dish.get('dish').errors.required">Please
+                Select Dish.</small>
+            </div>
+          </div>
+          <div class="form-group col-md-4">
+            <input class="form-control" formControlName="noOfServing" type="number"  aria-label="readonly input example">
+            <div *ngIf="dish.get('noOfServing').errors">
+              <small class="form-text text-danger"
+                *ngIf="dish.get('noOfServing').touched && dish.get('noOfServing').errors.required">Please Enter Number Of Serving.</small>
+            </div>
+          </div>
+          <div class="form-group col-md-2">
+            <div class="form-group col-md-1">
+              <button class="btn btn-outline-danger" (click)="deleteDishes(i)">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col">
+          <button type="button" (click)="previousStepTwo()" class="btn btn-primary">Previous</button>
+        </div>
+        <div class="col">
+          <button type="button" (click)="addDishes()" class="btn btn-primary">Add New Item</button>
+        </div>
+        <div class="col">
+          <button type="submit" class="btn btn-primary">Next</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="stepOneDetail" *ngIf="stepFourDetail">
+    <div class="card text-dark bg-light mb-3">
+      <div class="card-header">Order Confirmation</div>
+      <div class="card-body">
+        <p class="card-text">Meal: {{orderDetails.meal}}</p>
+        <p class="card-text">No of People: {{orderDetails.noOfPeople}}</p>
+        <p class="card-text">Restaurant: {{orderDetails.restaurantName}}</p>
+        <p class="card-text">Dishes</p>
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let d of dishDetails">{{d.dish}} - {{d.noOfServing}}</li>
+        </ul>
+        <button type="button" (click)="previousStepThree()" class="btn btn-primary">Previous</button>
+        <button type="submit" (click)="submit()"  class="btn btn-primary ms-2">Submit</button>
+      </div>
+    </div>
+  </div>
+
+</div>
